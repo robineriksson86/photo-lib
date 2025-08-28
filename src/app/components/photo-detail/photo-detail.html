@@ -1,0 +1,14 @@
+<a routerLink="/" class="back">← Back</a>
+
+<ng-container *ngIf="photo$ | async as p; else loading">
+  <figure class="full">
+    <img [src]="p.download_url" [alt]="p.author" />
+    <figcaption>
+      <strong>ID:</strong> {{ p.id }} · <strong>Author:</strong> {{ p.author }}
+    </figcaption>
+  </figure>
+</ng-container>
+
+<ng-template #loading>
+  <div class="loading">Loading photo…</div>
+</ng-template>

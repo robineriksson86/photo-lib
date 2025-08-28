@@ -1,0 +1,39 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  color: #111;
+  background: #fff;
+  padding: 12px 16px;
+}
+
+.nav {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.nav a {
+  color: #898888;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav a:hover {
+  border: 1px solid #222;
+  background: #222;
+  color: #fff;
+}
+
+.nav a.active {
+  border: 1px solid #fff;
+  background: #fff;
+  color: #111;
+  font-weight: 600;
+}
+
+.nav a.active:hover {
+  border: 1px solid #222;
+}

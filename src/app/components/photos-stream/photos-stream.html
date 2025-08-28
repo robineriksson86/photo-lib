@@ -1,0 +1,8 @@
+<div class="grid">
+  <a *ngFor="let p of photos" [routerLink]="['/photos', p.id]" class="tile" aria-label="Open photo">
+    <img [src]="p.download_url" [alt]="p.author" loading="lazy" />
+  </a>
+</div>
+<div class="sentinel" appInfiniteScroll (reachedBottom)="onBottom()" [disabled]="loading"></div>
+<div class="loader-wrap" *ngIf="loading"><app-loader></app-loader></div>
+<div class="status error" *ngIf="error">{{ error }}</div>
