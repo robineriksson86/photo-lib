@@ -1,2 +1,16 @@
 <h2>Favorites</h2>
-<p>Här kommer dina favoritbilder visas.</p>
+
+@if (favorites.list.length === 0) {
+<p>Inga favoriter ännu.</p>
+} @else {
+<div class="grid">
+  @for (p of favorites.list; track p.id) {
+  <div class="tile">
+    <a [routerLink]="['/photos', p.id]" aria-label="Open favorite">
+      <img [src]="p.download_url" [alt]="p.author" loading="lazy" />
+    </a>
+    <button class="remove" (click)="remove(p.id)" title="Remove from favorites">Ta bort</button>
+  </div>
+  }
+</div>
+}

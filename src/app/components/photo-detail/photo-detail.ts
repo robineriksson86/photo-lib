@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PhotosService } from '../../core/services/photos.service';
 import { Photo } from '../../core/models/photo.model';
-import { switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { PhotosStateService } from '../../core/state/photos-state';
+import { FavoritesStateService } from '../../core/state/favorites-state';
 
 @Component({
   selector: 'app-photo-detail',
@@ -14,11 +14,38 @@ import { Observable } from 'rxjs';
   styleUrl: './photo-detail.scss',
 })
 export class PhotoDetailComponent {
-  photo$!: Observable<Photo>;
+  photo?: Photo;
+  loading = true;
+  error = '';
 
-  constructor(private route: ActivatedRoute, private photos: PhotosService) {
-    this.photo$ = this.route.paramMap.pipe(
-      switchMap((params) => this.photos.getById(params.get('id')!))
-    );
+  constructor(
+    private route: ActivatedRoute,
+    private photosApi: PhotosService,
+    private photosState: PhotosStateService,
+    public favorites: FavoritesStateService
+  ) {
+    const id = this.route.snapshot.paramMap.get('id')!;
+
+    const cached = this.photosState.getFromCache(id);
+    if (cached) {
+      this.photo = cached;
+      this.loading = false;
+    } else {
+      this.photosApi.getById(id).subscribe({
+        next: (p) => {
+          this.photo = p;
+          this.photosState.upsert(p);
+          this.loading = false;
+        },
+        error: () => {
+          this.error = 'Kunde inte ladda fotot.';
+          this.loading = false;
+        },
+      });
+    }
+  }
+
+  toggleFav(photo: Photo) {
+    this.favorites.toggle(photo);
   }
 }

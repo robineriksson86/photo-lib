@@ -1,14 +1,20 @@
 <a routerLink="/" class="back">← Back</a>
 
-<ng-container *ngIf="photo$ | async as p; else loading">
-  <figure class="full">
-    <img [src]="p.download_url" [alt]="p.author" />
-    <figcaption>
-      <strong>ID:</strong> {{ p.id }} · <strong>Author:</strong> {{ p.author }}
-    </figcaption>
-  </figure>
-</ng-container>
+@if (loading) {
+<p>Laddar foto…</p>
+} @else if (error) {
+<p class="error">{{ error }}</p>
+} @else if (photo) {
+<figure class="full">
+  <img [src]="photo.download_url" [alt]="photo.author" />
+  <figcaption>
+    <strong>ID:</strong> {{ photo.id }} · <strong>Author:</strong> {{ photo.author }}
+  </figcaption>
 
-<ng-template #loading>
-  <div class="loading">Loading photo…</div>
-</ng-template>
+  <div class="detail-actions">
+    <button (click)="toggleFav(photo)">
+      {{ favorites.has(photo.id) ? 'Ta bort från favoriter' : 'Lägg till i favoriter' }}
+    </button>
+  </div>
+</figure>
+}

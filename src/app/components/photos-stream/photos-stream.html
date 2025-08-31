@@ -1,8 +1,26 @@
 <div class="grid">
-  <a *ngFor="let p of photos" [routerLink]="['/photos', p.id]" class="tile" aria-label="Open photo">
+  @for (p of (photos$ | async); track p.id) {
+  <a [routerLink]="['/photos', p.id]" class="tile" aria-label="Open photo">
     <img [src]="p.download_url" [alt]="p.author" loading="lazy" />
+    <button
+      class="fav-btn"
+      [class.active]="favorites.has(p.id)"
+      title="Toggle favorite"
+      (click)="onToggleFavorite($event, p)"
+    >
+      ★
+    </button>
   </a>
+  }
 </div>
-<div class="sentinel" appInfiniteScroll (reachedBottom)="onBottom()" [disabled]="loading"></div>
-<div class="loader-wrap" *ngIf="loading"><app-loader></app-loader></div>
-<div class="status error" *ngIf="error">{{ error }}</div>
+
+<div
+  class="sentinel"
+  appInfiniteScroll
+  (reachedBottom)="onBottom()"
+  [disabled]="(loading$ | async) === true"
+></div>
+
+@if ((loading$ | async) === true) {
+<div class="loader-wrap"><app-loader></app-loader></div>
+}

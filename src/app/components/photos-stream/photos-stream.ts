@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { PhotosService } from '../../core/services/photos.service';
-import { Photo } from '../../core/models/photo.model';
+import { map } from 'rxjs/operators';
 import { InfiniteScrollDirective } from '../../shared/directives/infinite-scroll';
 import { LoaderComponent } from '../loader/loader';
+import { PhotosStateService } from '../../core/state/photos-state';
+import { FavoritesStateService } from '../../core/state/favorites-state';
+
 @Component({
   selector: 'app-photos-stream',
   standalone: true,
@@ -13,31 +15,20 @@ import { LoaderComponent } from '../loader/loader';
   styleUrl: './photos-stream.scss',
 })
 export class PhotosStreamComponent {
-  photos: Photo[] = [];
-  loading = false;
-  error = '';
+  photos$ = this.state.state$.pipe(map((s) => s.photos));
+  loading$ = this.state.state$.pipe(map((s) => s.loading));
 
-  constructor(private photosService: PhotosService) {
-    this.loadMore();
+  constructor(private state: PhotosStateService, public favorites: FavoritesStateService) {
+    if (this.state.photos.length === 0) this.state.loadNext();
   }
 
   onBottom() {
-    this.loadMore();
+    this.state.loadNext();
   }
 
-  loadMore() {
-    if (this.loading) return;
-    this.loading = true;
-    this.error = '';
-    this.photosService.getNextBatch().subscribe({
-      next: (batch) => {
-        this.photos.push(...batch);
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'Kunde inte hämta fler foton. Försök igen.';
-        this.loading = false;
-      },
-    });
+  onToggleFavorite(ev: MouseEvent, p: { id: string }) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.favorites.toggle(p as any);
   }
 }

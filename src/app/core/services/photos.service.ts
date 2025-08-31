@@ -5,14 +5,11 @@ import { Photo } from '../models/photo.model';
 
 @Injectable({ providedIn: 'root' })
 export class PhotosService {
-  private page = 1;
   private readonly limit = 20;
-
   constructor(private http: HttpClient) {}
 
-  getNextBatch(): Observable<Photo[]> {
-    const url = `https://picsum.photos/v2/list?page=${this.page}&limit=${this.limit}`;
-    this.page++;
+  getPage(page: number): Observable<Photo[]> {
+    const url = `https://picsum.photos/v2/list?page=${page}&limit=${this.limit}`;
     const jitter = 200 + Math.floor(Math.random() * 100);
     return this.http.get<Photo[]>(url).pipe(delay(jitter));
   }

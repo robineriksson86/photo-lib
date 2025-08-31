@@ -33,3 +33,33 @@ img {
   height: 300px;
   object-fit: cover;
 }
+.tile {
+  position: relative;
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 20px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s, color 0.15s;
+}
+.fav-btn:hover {
+  transform: scale(1.05);
+}
+.fav-btn.active {
+  background: #ffd54d;
+  color: #111;
+}
